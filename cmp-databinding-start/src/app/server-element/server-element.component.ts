@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, DoCheck, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-server-element',
@@ -6,10 +6,17 @@ import { AfterContentInit, Component, DoCheck, Input, OnChanges, OnInit, SimpleC
   styleUrls: ['./server-element.component.css'],
   encapsulation: ViewEncapsulation.Emulated //None, ShadowDom
 })
-  export class ServerElementComponent implements OnInit, OnChanges, DoCheck, AfterContentInit {
+  export class ServerElementComponent implements OnInit,
+  OnChanges,
+  DoCheck,
+  AfterContentInit,
+  AfterViewInit,
+  AfterViewChecked,
+  OnDestroy {
   @Input()  element: {type: string, name: string, content: string};
   //Can change the name of the element object by passing the input decorator a new name
   @Input() name: string;
+  @ViewChild('heading', {static: true}) header: ElementRef;
 
   constructor() {
     console.log('constructor called!');
@@ -23,6 +30,7 @@ import { AfterContentInit, Component, DoCheck, Input, OnChanges, OnInit, SimpleC
 
   ngOnInit(): void {
     console.log('ngOnInit called');
+    console.log(this.header.nativeElement.textContent);
 
   }
 
@@ -39,5 +47,17 @@ import { AfterContentInit, Component, DoCheck, Input, OnChanges, OnInit, SimpleC
 
   ngAfterContentChecked(): void {
     console.log("ngafter content checked");
+  }
+
+  ngAfterViewInit(){
+    console.log("ngafter view init");
+  }
+
+  ngAfterViewChecked(): void {
+    console.log("ngafter view checked");
+  }
+
+  ngOnDestroy() {
+    console.log('NgOnDestroy called!');
   }
 }
