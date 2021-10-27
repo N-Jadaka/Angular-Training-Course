@@ -6,7 +6,7 @@
       </button>
       <br /><br />
       <ul class="list-group">
-        <div *ngIf="onlyOdd">
+        <!-- <div *ngIf="onlyOdd">
           <li
             class="list-group-item"
             [ngClass]="{ odd: odd % 2 }"
@@ -16,6 +16,7 @@
             {{ odd }}
           </li>
         </div>
+        --
         <div *ngIf="!onlyOdd">
           <li
             [ngClass]="{ even: even % 2 }"
@@ -25,11 +26,61 @@
           >
             {{ even }}
           </li>
+        </div> -->
+
+        <div *appUnless="onlyOdd">
+          <li
+            [ngClass]="{ even: even % 2 }"
+            [ngStyle]="{ backgroundColor: even % 2 == 0 ? 'blue' : 'yellow' }"
+            class="list-group-item"
+            *ngFor="let even of evenNumbers"
+          >
+            {{ even }}
+          </li>
         </div>
+
+        <div *appUnless="!onlyOdd">
+          <li
+            class="list-group-item"
+            [ngClass]="{ odd: odd % 2 }"
+            [ngStyle]="{ backgroundColor: odd % 2 !== 0 ? 'yellow' : 'blue' }"
+            *ngFor="let odd of oddNumbers"
+          >
+            {{ odd }}
+          </li>
+        </div>
+
+        <!-- <ng-template ngIf="!onlyOdd">
+          <div>
+            <li
+              [ngClass]="{ even: even % 2 }"
+              [ngStyle]="{ backgroundColor: even % 2 == 0 ? 'blue' : 'yellow' }"
+              class="list-group-item"
+              *ngFor="let even of evenNumbers"
+            >
+              {{ even }}
+            </li>
+          </div>
+        </ng-template> -->
+
+        <p appBasicHighlight>Style me with basic directive</p>
+        <p
+          appBetterHighlight
+          [defaultColor]="'yellow'"
+          [appBetterHighlight]="'red'"
+        >
+          Style me with basic directive
+        </p>
       </ul>
-      <ng-template [ngIf]="onlyOdd">
+      <div [ngSwitch]="value">
+        <p *ngSwitchCase="5">Value is 5</p>
+        <p *ngSwitchCase="10">Value is 10</p>
+        <p *ngSwitchCase="100">Value is 100</p>
+        <p *ngSwitchDefault>Value is Default</p>
+      </div>
+      <!-- <ng-template [ngIf]="onlyOdd">
         <p>Only odd</p>
-      </ng-template>
+      </ng-template> -->
     </div>
   </div>
 </div>
