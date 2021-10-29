@@ -1,3 +1,6 @@
+import { ServerResolver } from './servers/server/server-resolver.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
+import { CanDeactivateGuard } from './servers/edit-server/can-deactivate-guard.service';
 import { AuthGuard } from './auth-guard.service';
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
@@ -18,11 +21,12 @@ const appRoutes: Routes = [
     // canActivate:[AuthGuard],
     canActivateChild: [AuthGuard],
     component: ServersComponent, children: [
-    { path: ':id', component: ServerComponent },
-    { path: ':id/edit', component: EditServerComponent }
+    { path: ':id', component: ServerComponent, resolve: {server: ServerResolver} },
+    { path: ':id/edit', component: EditServerComponent, canDeactivate: [CanDeactivateGuard]}
 
   ] },
-  { path: 'not-found', component: PageNotFoundComponent},
+  // { path: 'not-found', component: PageNotFoundComponent},
+  { path: 'not-found', component: ErrorPageComponent, data: {message: 'Page not found!'}},
   { path: '**', redirectTo: '/not-found'}
 
 ];
