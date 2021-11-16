@@ -1,13 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Post } from './post.model';
-import {map } from 'rxjs/operators';
+import {catchError, map, tap } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostsService {
-
+  error = new Subject<string>();
   constructor(private http: HttpClient){
 
   }
@@ -16,15 +17,28 @@ export class PostsService {
     const postData: Post = {title: title, content: content};
     this.http.post(
       'https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json',
-      postData
+      postData,
+      {
+        observe: 'response'
+      }
       ).subscribe(responseData => {
         console.log(responseData);
-      });
+      },
+        error => {
+          this.error.next(error.message);
+        }
+
+      );
   }
 
   fetchPosts() {
     return this.http
-    .get<{[key:string]: Post}>('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json')
+    .get<{[key:string]: Post}>('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json',
+      {
+        headers: new HttpHeaders({'Custom-Header': 'Hello'}),
+        params: new HttpParams().set('print', 'pretty')
+      }
+    )
     .pipe(map( responseData => {
       const postArray: Post[] = [];
       for(const key in responseData){
@@ -34,11 +48,24 @@ export class PostsService {
         }
       }
       return postArray;
-    }))
+    }),
+      catchError(errorRes => {
+        return throwError(errorRes);
+      })
+    )
   }
 
   deletePosts() {
-    return this.http.delete('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json')
+    return this.http.delete('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json',
+      {
+        observe: 'events'
+      }
+    ).pipe(tap(event => {
+      console.log(event);
+      if(event.type === HttpEventType.Response) {
+        console.log(event.body);
+      }
+    }))
   }
 
 }
