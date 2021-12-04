@@ -33,10 +33,11 @@ export class PostsService {
 
   fetchPosts() {
     return this.http
-    .get<{[key:string]: Post}>('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json',
+    .get('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json',
       {
         headers: new HttpHeaders({'Custom-Header': 'Hello'}),
-        params: new HttpParams().set('print', 'pretty')
+        params: new HttpParams().set('print', 'pretty'),
+        responseType: 'json'
       }
     )
     .pipe(map( responseData => {
@@ -58,7 +59,8 @@ export class PostsService {
   deletePosts() {
     return this.http.delete('https://ng-complete-guide-e0e34-default-rtdb.firebaseio.com/posts.json',
       {
-        observe: 'events'
+        observe: 'events',
+        responseType: 'json'
       }
     ).pipe(tap(event => {
       console.log(event);
