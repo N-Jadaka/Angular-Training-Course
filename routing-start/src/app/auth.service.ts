@@ -1,6 +1,5 @@
 export class AuthService {
   loggedIn = false;
-  user: any;
 
   isAuthenticated() {
     const promise = new Promise(
